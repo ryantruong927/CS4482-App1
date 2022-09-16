@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RubyController : MonoBehaviour {
 
-    public float Gravity = 0.1f;
     public float Speed = 10f;
 
 
