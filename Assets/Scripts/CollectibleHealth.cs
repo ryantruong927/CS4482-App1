@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CollectibleHealth : MonoBehaviour {
+	public int health = 1;
 
 	void OnTriggerEnter2D(Collider2D other) {
-		RubyController controller = other.GetComponent<RubyController>();
+		Controller controller = other.GetComponent<Controller>();
 
 		if (controller != null) {
-			if (controller.health < controller.maxHealth) {
-				controller.ChangeHealth(1);
+			if (controller.Health < controller.maxHealth) {
+				controller.ChangeHealth(health);
 				Destroy(gameObject);
 			}
 		}
 	}
-
 }
