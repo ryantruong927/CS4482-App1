@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MrClockworkController : Controller {
+    public bool isBroken = true;
+
     public float changeTime = 2f;
     private float changeTimer;
 
@@ -22,6 +24,9 @@ public class MrClockworkController : Controller {
 	}
 
 	protected override void Update() {
+        if (!isBroken)
+            return;
+
         base.Update();
 
         if (changeTimer > 0)
@@ -32,7 +37,10 @@ public class MrClockworkController : Controller {
         }
 	}
 
-	void FixedUpdate() {
+	private void FixedUpdate() {
+		if (!isBroken)
+			return;
+
 		Vector2 position = rigidbody2D.position;
 
         if (isGoingUpAndDown) {
@@ -47,7 +55,13 @@ public class MrClockworkController : Controller {
 		rigidbody2D.MovePosition(position);
 	}
 
-	void OnCollisionStay2D(Collision2D other) {
+	public void Fix() {
+		isBroken = false;
+		rigidbody2D.simulated = false;
+        animator.SetTrigger("Fixed");
+	}
+
+	private void OnCollisionStay2D(Collision2D other) {
 		RubyController player = other.gameObject.GetComponent<RubyController>();
 
 		if (player != null)
