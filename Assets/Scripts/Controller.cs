@@ -15,9 +15,11 @@ public class Controller : MonoBehaviour {
 	public float speed = 3f;
 
 	protected Rigidbody2D rigidbody2D;
+	protected Animator animator;
 
 	protected virtual void Start() {
 		rigidbody2D = GetComponent<Rigidbody2D>();
+		animator = GetComponent<Animator>();
 		currentHealth = maxHealth;
 	}
 

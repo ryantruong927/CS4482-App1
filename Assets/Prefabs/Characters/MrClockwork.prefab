@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5162481118402897560}
   - component: {fileID: 243003652852287738}
   - component: {fileID: 7889276716069558680}
+  - component: {fileID: 1881137047108095735}
   m_Layer: 0
   m_Name: MrClockwork
   m_TagString: Untagged
@@ -150,3 +151,23 @@ MonoBehaviour:
   speed: 3
   changeTime: 2
   isGoingUpAndDown: 0
+  damage: -1
+--- !u!95 &1881137047108095735
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7990923698462545316}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3e85cef4028513e4c817742ae9b6f32b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

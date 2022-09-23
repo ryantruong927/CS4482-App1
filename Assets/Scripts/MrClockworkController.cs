@@ -14,9 +14,14 @@ public class MrClockworkController : Controller {
         base.Start();
 
         changeTimer = changeTime;
-    }
 
-    protected override void Update() {
+        if (isGoingUpAndDown)
+            animator.SetFloat("Move X", 0);
+        else
+			animator.SetFloat("Move Y", 0);
+	}
+
+	protected override void Update() {
         base.Update();
 
         if (changeTimer > 0)
@@ -30,15 +35,19 @@ public class MrClockworkController : Controller {
 	void FixedUpdate() {
 		Vector2 position = rigidbody2D.position;
 
-        if (isGoingUpAndDown)
+        if (isGoingUpAndDown) {
+            animator.SetFloat("Move Y", speed);
             position.y += speed * Time.deltaTime;
-		else
-			position.x += speed * Time.deltaTime;
+		}
+        else {
+            animator.SetFloat("Move X", speed);
+            position.x += speed * Time.deltaTime;
+		}
 
 		rigidbody2D.MovePosition(position);
 	}
 
-	void OnCollisionEnter2D(Collision2D other) {
+	void OnCollisionStay2D(Collision2D other) {
 		RubyController player = other.gameObject.GetComponent<RubyController>();
 
 		if (player != null)
