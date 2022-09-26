@@ -3,68 +3,113 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MrClockworkController : Controller {
-    public bool isBroken = true;
+	private Vector2 lastSeenPosition;
+	[SerializeField]
+	private bool isChasing;
+	public float chaseTime = 2f;
+	private float chaseTimer;
 
-    public float changeTime = 2f;
-    private float changeTimer;
+	public bool isBroken = true;
 
-    public bool isGoingUpAndDown = false;
+	public float changeTime = 2f;
+	private float changeTimer;
 
-    public int damage = -1;
+	public bool isGoingUpAndDown = false;
 
-    protected override void Start() {
-        base.Start();
+	public int damage = -1;
 
-        changeTimer = changeTime;
+	protected override void Start() {
+		base.Start();
 
-        if (isGoingUpAndDown)
-            animator.SetFloat("Move X", 0);
-        else
-			animator.SetFloat("Move Y", 0);
+		changeTimer = changeTime;
+
+		if (isGoingUpAndDown)
+			animator.SetFloat("Move X", 0f);
+		else
+			animator.SetFloat("Move Y", 0f);
 	}
 
 	protected override void Update() {
-        if (!isBroken)
-            return;
+		if (isBroken) {
+			base.Update();
 
-        base.Update();
-
-        if (changeTimer > 0)
-            changeTimer -= Time.deltaTime;
-        else {
-            changeTimer = changeTime;
-            speed *= -1;
-        }
+			if (!isChasing) {
+				if (changeTimer > 0)
+					changeTimer -= Time.deltaTime;
+				else {
+					changeTimer = changeTime;
+					speed *= -1;
+				}
+			}
+			else {
+				if (chaseTimer > 0)
+					chaseTimer -= Time.deltaTime;
+				else {
+					isChasing = false;
+					changeTimer = changeTime;
+				}
+			}
+		}
 	}
 
 	private void FixedUpdate() {
-		if (!isBroken)
-			return;
+		if (isBroken) {
+			Vector2 position = rigidbody2D.position;
 
-		Vector2 position = rigidbody2D.position;
+			if (isChasing) {
+				if (Mathf.Abs(lastSeenPosition.x - position.x) > Mathf.Abs(lastSeenPosition.y - position.y)) {
+					animator.SetFloat("Move X", position.x < lastSeenPosition.x ? 1f : -1f);
+					animator.SetFloat("Move Y", 0f);
+				}
+				else {
+					animator.SetFloat("Move X", 0f);
+					animator.SetFloat("Move Y", position.y < lastSeenPosition.y ? 1f : -1f);
+				}
 
-        if (isGoingUpAndDown) {
-            animator.SetFloat("Move Y", speed);
-            position.y += speed * Time.deltaTime;
+				position = Vector2.MoveTowards(rigidbody2D.position, lastSeenPosition, Mathf.Abs(speed) * Time.deltaTime);
+				rigidbody2D.MovePosition(position);
+			}
+			else {
+				if (isGoingUpAndDown) {
+					animator.SetFloat("Move Y", speed);
+					position.y += speed * Time.deltaTime;
+				}
+				else {
+					animator.SetFloat("Move X", speed);
+					position.x += speed * Time.deltaTime;
+				}
+
+				rigidbody2D.MovePosition(position);
+			}
 		}
-        else {
-            animator.SetFloat("Move X", speed);
-            position.x += speed * Time.deltaTime;
-		}
-
-		rigidbody2D.MovePosition(position);
 	}
 
 	public void Fix() {
 		isBroken = false;
 		rigidbody2D.simulated = false;
-        animator.SetTrigger("Fixed");
+		animator.SetTrigger("Fixed");
 	}
 
-	private void OnCollisionStay2D(Collision2D other) {
-		RubyController player = other.gameObject.GetComponent<RubyController>();
+	private void OnCollisionStay2D(Collision2D collision) {
+		if (isBroken) {
+			RubyController player = collision.gameObject.GetComponent<RubyController>();
 
-		if (player != null)
-			player.ChangeHealth(damage);
+			if (player != null)
+				player.ChangeHealth(damage);
+		}
+	}
+
+	private void OnTriggerStay2D(Collider2D collision) {
+		if (isBroken) {
+			RubyController player = collision.gameObject.GetComponent<RubyController>();
+
+			if (player != null) {
+				lastSeenPosition = collision.gameObject.GetComponent<Rigidbody2D>().position;
+				Debug.Log(lastSeenPosition);
+
+				isChasing = true;
+				chaseTimer = chaseTime;
+			}
+		}
 	}
 }

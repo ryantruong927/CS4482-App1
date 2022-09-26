@@ -19,8 +19,8 @@ public class Projectile : MonoBehaviour {
         rigidbody2D.AddForce(direction * force);
     }
 
-	private void OnCollisionEnter2D(Collision2D other) {
-		MrClockworkController mrClockwork = other.gameObject.GetComponent<MrClockworkController>();
+	private void OnCollisionEnter2D(Collision2D collision) {
+		MrClockworkController mrClockwork = collision.gameObject.GetComponent<MrClockworkController>();
 
 		if (mrClockwork != null)
 			mrClockwork.Fix();
