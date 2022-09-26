@@ -149,6 +149,7 @@ MonoBehaviour:
   currentHealth: 0
   invincibleTime: 1
   speed: 3
+  isBroken: 1
   changeTime: 2
   isGoingUpAndDown: 0
   damage: -1
