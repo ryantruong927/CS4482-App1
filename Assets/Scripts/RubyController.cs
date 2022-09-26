@@ -36,11 +36,14 @@ public class RubyController : Controller {
 	public override void ChangeHealth(int amount) {
 		base.ChangeHealth(amount);
 
-		animator.SetTrigger("Hit");
+		if (amount < 0)
+			animator.SetTrigger("Hit");
 	}
 
 	private void Launch() {
-		GameObject projectileObject = Instantiate(projectilePrefab, rigidbody2D.position + Vector2.up * 0.5f, Quaternion.identity);
+		Vector2 projectilePosition = (rigidbody2D.position + Vector2.up * 0.5f) + lookDirection;
+
+		GameObject projectileObject = Instantiate(projectilePrefab, projectilePosition, Quaternion.identity);
 
 		Projectile projectile = projectileObject.GetComponent<Projectile>();
 		projectile.Launch(lookDirection, 300f);
