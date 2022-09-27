@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MrClockworkController : Controller {
+	public bool isBroken = true;
+
 	private Vector2 lastSeenPosition;
 	private bool isChasing;
 	public float chaseSpeed = 2.5f;
 	public float chaseTime = 2f;
 	private float chaseTimer;
-
-	public bool isBroken = true;
 
 	public float changeTime = 2f;
 	private float changeTimer;
@@ -37,6 +37,8 @@ public class MrClockworkController : Controller {
 				if (chaseTimer > 0)
 					chaseTimer -= Time.deltaTime;
 				else {
+					// if done chasing, restart the change cycle
+
 					isChasing = false;
 					changeTimer = changeTime;
 
@@ -62,6 +64,8 @@ public class MrClockworkController : Controller {
 			Vector2 position = rigidbody2D.position;
 
 			if (isChasing) {
+				// change the direction the enemy is facing based on its position relative to the player
+				// in other words, make the enemy face the player correctly given their speed in toward a direction
 				if (Mathf.Abs(lastSeenPosition.x - position.x) > Mathf.Abs(lastSeenPosition.y - position.y)) {
 					animator.SetFloat("Move X", position.x < lastSeenPosition.x ? 1f : -1f);
 					animator.SetFloat("Move Y", 0f);
@@ -71,6 +75,7 @@ public class MrClockworkController : Controller {
 					animator.SetFloat("Move Y", position.y < lastSeenPosition.y ? 1f : -1f);
 				}
 
+				// move enemy toward the player's position
 				position = Vector2.MoveTowards(rigidbody2D.position, lastSeenPosition, Mathf.Abs(chaseSpeed) * Time.deltaTime);
 				rigidbody2D.MovePosition(position);
 			}
@@ -108,10 +113,13 @@ public class MrClockworkController : Controller {
 		if (isBroken) {
 			RubyController player = collision.gameObject.GetComponent<RubyController>();
 
+			// if player entered the FOV
 			if (player != null) {
+				// get positions of enemy and player
 				Vector2 position = rigidbody2D.position;
 				lastSeenPosition = collision.gameObject.GetComponent<Rigidbody2D>().position;
 
+				// check if the player is in front of the enemy
 				if (!isChasing) {
 					if (speed > 0) {
 						if (isGoingUpAndDown && (lastSeenPosition.y < position.y))
@@ -126,6 +134,8 @@ public class MrClockworkController : Controller {
 				}
 
 				isChasing = true;
+
+				// keep restarting the timer as long as the player is seen
 				chaseTimer = chaseTime;
 			}
 		}
