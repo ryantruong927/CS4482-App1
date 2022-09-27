@@ -105,7 +105,8 @@ MonoBehaviour:
   currentHealth: 0
   invincibleTime: 1
   speed: 2.5
-  isChasing: 0
+  chaseSpeed: 2.5
+  chaseTime: 2
   isBroken: 1
   changeTime: 2
   isGoingUpAndDown: 0
@@ -144,18 +145,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.14814001}
+  m_Offset: {x: -0.011302471, y: 0.18581498}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.0001945, y: 0.99921876}
+    oldSize: {x: 1.0001945, y: 1}
     newSize: {x: 1.7069987, y: 1.7053334}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.33823454, y: 0.29628003}
+  m_Size: {x: 0.3495369, y: 0.35656}
   m_EdgeRadius: 0
 --- !u!95 &1881137047108095735
 Animator:

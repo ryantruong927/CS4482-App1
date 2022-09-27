@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MrClockworkController : Controller {
 	private Vector2 lastSeenPosition;
-	[SerializeField]
 	private bool isChasing;
+	public float chaseSpeed = 2.5f;
 	public float chaseTime = 2f;
 	private float chaseTimer;
 
@@ -33,20 +33,25 @@ public class MrClockworkController : Controller {
 		if (isBroken) {
 			base.Update();
 
-			if (!isChasing) {
-				if (changeTimer > 0)
-					changeTimer -= Time.deltaTime;
-				else {
-					changeTimer = changeTime;
-					speed *= -1;
-				}
-			}
-			else {
+			if (isChasing) {
 				if (chaseTimer > 0)
 					chaseTimer -= Time.deltaTime;
 				else {
 					isChasing = false;
 					changeTimer = changeTime;
+
+					if (isGoingUpAndDown)
+						animator.SetFloat("Move X", 0f);
+					else
+						animator.SetFloat("Move Y", 0f);
+				}
+			}
+			else {
+				if (changeTimer > 0)
+					changeTimer -= Time.deltaTime;
+				else {
+					changeTimer = changeTime;
+					speed *= -1;
 				}
 			}
 		}
@@ -66,7 +71,7 @@ public class MrClockworkController : Controller {
 					animator.SetFloat("Move Y", position.y < lastSeenPosition.y ? 1f : -1f);
 				}
 
-				position = Vector2.MoveTowards(rigidbody2D.position, lastSeenPosition, Mathf.Abs(speed) * Time.deltaTime);
+				position = Vector2.MoveTowards(rigidbody2D.position, lastSeenPosition, Mathf.Abs(chaseSpeed) * Time.deltaTime);
 				rigidbody2D.MovePosition(position);
 			}
 			else {
@@ -104,8 +109,21 @@ public class MrClockworkController : Controller {
 			RubyController player = collision.gameObject.GetComponent<RubyController>();
 
 			if (player != null) {
+				Vector2 position = rigidbody2D.position;
 				lastSeenPosition = collision.gameObject.GetComponent<Rigidbody2D>().position;
-				Debug.Log(lastSeenPosition);
+
+				if (!isChasing) {
+					if (speed > 0) {
+						if (isGoingUpAndDown && (lastSeenPosition.y < position.y))
+							return;
+						else if (lastSeenPosition.x < position.x)
+							return;
+					}
+					else if (isGoingUpAndDown && (lastSeenPosition.y > position.y))
+						return;
+					else if (lastSeenPosition.x > position.x)
+						return;
+				}
 
 				isChasing = true;
 				chaseTimer = chaseTime;
